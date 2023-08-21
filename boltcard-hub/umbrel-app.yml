@@ -21,11 +21,10 @@ dependencies:
   - lightning
 repo: https://github.com/boltcard/boltcard-lndhub
 support: https://t.me/bolt_card
+port: 1971
 gallery:
   - https://imgur.com/5LOLWUL
   - https://imgur.com/QWOH5rD
-port: 1971
-gallery:
 path: ""
 defaultPassword: ""
 submitter: Boltcard
