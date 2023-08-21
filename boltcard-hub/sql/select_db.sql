@@ -1,1 +1,0 @@
-SELECT 'CREATE DATABASE card_db' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'card_db');
