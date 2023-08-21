@@ -4,7 +4,7 @@ category: bitcoin
 name: Boltcard LndHub
 version: "v0.2.0"
 tagline: LndHub for Boltcard
-icon: https://i.imgur.com/H7UbESy.png
+icon: https://svgur.com/i/mvA.svg
 description: >-
   A fork of Bluewallets LndHub with support for bolt card connections. 
 
