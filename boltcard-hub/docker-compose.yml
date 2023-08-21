@@ -1,0 +1,132 @@
+version: '3'
+services:
+  app_proxy:
+    environment:
+      APP_HOST: boltcard-hub_caddy_1
+      APP_PORT: 8080
+      PROXY_AUTH_WHITELIST: "*"
+      PROXY_AUTH_BLACKLIST: "/settings,/settings/*"
+  boltcard:
+    image: onesandzerosnz/boltcard:v0.4.0
+    depends_on:
+      - boltcard_db
+    restart: unless-stopped
+    environment:
+      - LOG_LEVEL=DEBUG
+      - DB_HOST=$APP_BOLTCARD_SERVICE_DB_IP
+      - DB_USER=${APP_BOLTCARD_DB_USER}
+      - DB_PASSWORD=${APP_BOLTCARD_DB_PASSWORD}
+      - DB_PORT=5432    
+      - DB_NAME=${APP_BOLTCARD_DB_NAME}
+    expose: 
+      - "9000"
+      - "9001"
+    volumes:
+      - ${APP_LIGHTNING_NODE_DATA_DIR}:/lnd:ro
+    networks:
+      default:
+        ipv4_address: $APP_BOLTCARD_SERVICE_IP
+  boltcard_db:
+    build: 
+      context: ${APP_DATA_DIR}/database
+      dockerfile: Dockerfile.postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${APP_BOLTCARD_DB_USER}
+      - POSTGRES_PASSWORD=${APP_BOLTCARD_DB_PASSWORD}
+      - POSTGRES_DB=${APP_BOLTCARD_DB_NAME}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - LOG_LEVEL=DEBUG
+      - HOST_DOMAIN=
+      - MIN_WITHDRAW_SATS=1
+      - MAX_WITHDRAW_SATS=1000000
+      - LN_HOST=${APP_LIGHTNING_NODE_IP}
+      - LN_PORT=${APP_LIGHTNING_NODE_GRPC_PORT}
+      - LN_TLS_FILE=/lnd/tls.cert
+      - LN_MACAROON_FILE=/lnd/data/chain/bitcoin/${APP_BITCOIN_NETWORK}/admin.macaroon
+      - FEE_LIMIT_SAT=10
+      - FEE_LIMIT_PERCENT=0.5
+      - LN_TESTNODE=
+      - FUNCTION_LNURLW=ENABLE
+      - FUNCTION_LNURLP=ENABLE
+      - FUNCTION_EMAIL=DISABLE
+      - AWS_SES_ID=
+      - AWS_SES_SECRET=
+      - AWS_SES_EMAIL_FROM=
+      - EMAIL_MAX_TXS=
+      - FUNCTION_LNDHUB=ENABLE
+      - LNDHUB_URL=http://$APP_BOLTCARD_HUB_IP:9002
+      - FUNCTION_INTERNAL_API=ENABLE
+    volumes:
+      - ${APP_DATA_DIR}/database/service-db:/var/lib/postgresql/data
+      - ${APP_DATA_DIR}/sql/select_db.sql:/docker-entrypoint-initdb.d/select_db.sql
+      - ${APP_DATA_DIR}/sql/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+      - ${APP_DATA_DIR}/sql/settings_db.sh:/docker-entrypoint-initdb.d/settings_db.sh
+    expose:
+      - "5432"
+    networks:
+      default:
+        ipv4_address: $APP_BOLTCARD_SERVICE_DB_IP
+  redis:
+    image: redis:6.2-buster
+    command: redis-server --requirepass redis_pass
+    restart: on-failure
+    stop_grace_period: 5m
+    stop_signal: SIGINT
+    volumes:
+      - ${APP_DATA_DIR}/database/redis-db:/data
+    networks:
+      default:
+        ipv4_address: $APP_BOLTCARD_REDIS_IP
+  hub:
+    image: onesandzerosnz/boltcard-lndhub:v0.2.1
+    depends_on: [ redis ]
+    restart: on-failure
+    stop_grace_period: 5m30s
+    stop_signal: SIGINT
+    expose:
+      - "9002"
+    environment:
+      PORT: "9002"
+      LND_CERT_FILE: "/lnd/tls.cert"
+      LND_ADMIN_MACAROON_FILE: "/lnd/data/chain/bitcoin/mainnet/admin.macaroon"
+      CONFIG: '{
+        "enableUpdateDescribeGraph": false,
+        "postRateLimit": 100,
+        "rateLimit": 200,
+        "forwardReserveFee": 0.03,
+        "intraHubFee": 0.003,
+        "redis": { "port": 6379, "host": "$APP_BOLTCARD_REDIS_IP", "family": 4, "password": "redis_pass", "db": 0 }, 
+        "lnd": { "url": "$APP_LIGHTNING_NODE_IP:$APP_LIGHTNING_NODE_GRPC_PORT", "password": ""}, 
+        "boltcardservice": { "url": "http://$APP_BOLTCARD_SERVICE_IP:9001", "service_url": "http://$APP_BOLTCARD_SERVICE_IP:9000" }
+      }'
+    volumes:
+      - ${APP_LIGHTNING_NODE_DATA_DIR}:/lnd:ro
+    networks:
+      default:
+        ipv4_address: $APP_BOLTCARD_HUB_IP
+  settings-gui:
+    image: onesandzerosnz/boltcardgui-umbrel:v0.1.3
+    depends_on:
+      - boltcard_db
+    expose:
+      - "80"
+    environment:
+      - DOCUMENT_ROOT=/var/www/html
+      - SS_TRUSTED_PROXY_IPS=*
+      - SS_ENVIRONMENT_TYPE=live
+      - SS_DATABASE_SERVER=${APP_BOLTCARD_SERVICE_DB_IP}
+      - SS_DATABASE_NAME=${APP_BOLTCARD_DB_NAME}
+      - SS_DATABASE_USERNAME=${APP_BOLTCARD_DB_USER}
+      - SS_DATABASE_PASSWORD=${APP_BOLTCARD_DB_PASSWORD}
+      - SS_DATABASE_CLASS=PostgreSQLDatabase
+      - SS_BASE_URL=https://${APP_DOMAIN}/settings
+  caddy:
+    image: caddy
+    restart: unless-stopped
+    environment: 
+      APP_BOLTCARD_SERVICE_IP: $APP_BOLTCARD_SERVICE_IP
+    volumes:
+      - ${APP_DATA_DIR}/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ${APP_DATA_DIR}/caddy/data:/data
+      - ${APP_DATA_DIR}/caddy/config:/config

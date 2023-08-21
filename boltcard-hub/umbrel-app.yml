@@ -1,0 +1,31 @@
+manifestVersion: 1.1
+id: boltcard-hub
+name: Boltcard LndHub
+tagline: LndHub for Boltcard
+icon: https://i.imgur.com/H7UbESy.png
+category: Development
+version: "0.2.0"
+port: 1971
+description: >-
+  A fork of Bluewallets LndHub with support for bolt card connections. 
+
+  Wrapper for Lightning Network Daemon (lnd). It provides separate accounts with minimum trust for end users.
+developer: Boltcard
+website: https://boltcard.org
+submitter: Boltcard
+submission: https://github.com/getumbrel/boltcard-hub
+repo: https://github.com/boltcard/boltcard-lndhub
+support: https://t.me/bolt_card
+gallery:
+  - https://i.imgur.com/5LOLWUL.jpg
+  - https://i.imgur.com/QWOH5rD.jpg
+releaseNotes: >-
+  🔢 PIN support
+
+  Now able to set PIN and PIN limit for the card. PIN must be passed when amount exceeds PIN limit.
+
+dependencies:
+  - bitcoin
+  - lightning
+path: ""
+defaultPassword: ""
