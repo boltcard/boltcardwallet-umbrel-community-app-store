@@ -3,7 +3,7 @@ id: boltcard-hub
 name: Boltcard LndHub
 tagline: LndHub for Boltcard
 icon: https://i.imgur.com/H7UbESy.png
-category: bitcoin
+category: Development
 version: "0.2.0"
 port: 1971
 description: >-
