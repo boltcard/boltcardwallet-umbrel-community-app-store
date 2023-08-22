@@ -4,7 +4,7 @@ name: Bolt Card Wallet LndHub
 tagline: LndHub for Bolt Card Wallet
 icon: https://i.imgur.com/H7UbESy.png
 category: Development
-version: "0.2.5"
+version: "0.2.6"
 port: 1971
 description: >-
   A fork of Bluewallets LndHub with support for bolt card connections. 
@@ -26,6 +26,9 @@ gallery:
   - https://i.imgur.com/5LOLWUL.jpg
   - https://i.imgur.com/QWOH5rD.jpg
 releaseNotes: >-
+  - Updated settings GUI
+  
+
   🔢 PIN support
 
   Now able to set PIN and PIN limit for the card. PIN must be passed when amount exceeds PIN limit.
