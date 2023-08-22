@@ -101,7 +101,7 @@ services:
         "boltcardservice": { "url": "http://$APP_BOLTCARD_SERVICE_IP:9001", "service_url": "http://$APP_BOLTCARD_SERVICE_IP:9000" }
       }'
       SETTINGS_RELATIVE_PATH: '/settings'
-      UMBREL: true
+      UMBREL: 'true'
     volumes:
       - ${APP_LIGHTNING_NODE_DATA_DIR}:/lnd:ro
     networks:
