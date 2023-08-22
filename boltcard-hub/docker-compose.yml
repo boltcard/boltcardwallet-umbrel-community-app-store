@@ -79,7 +79,7 @@ services:
       default:
         ipv4_address: $APP_BOLTCARD_REDIS_IP
   hub:
-    image: onesandzerosnz/boltcard-lndhub:v0.2.3
+    image: onesandzerosnz/boltcard-lndhub:v0.2.4
     depends_on: [ redis ]
     restart: on-failure
     stop_grace_period: 5m30s

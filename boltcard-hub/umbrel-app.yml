@@ -4,7 +4,7 @@ name: Bolt Card LndHub
 tagline: LndHub for Bolt Card
 icon: https://i.imgur.com/H7UbESy.png
 category: Development
-version: "0.2.2"
+version: "0.2.3"
 port: 1971
 description: >-
   A fork of Bluewallets LndHub with support for bolt card connections. 
