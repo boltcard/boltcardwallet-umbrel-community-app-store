@@ -79,7 +79,7 @@ services:
       default:
         ipv4_address: $APP_BOLTCARD_REDIS_IP
   hub:
-    image: onesandzerosnz/boltcard-lndhub:v0.2.4
+    image: onesandzerosnz/boltcard-lndhub:v0.2.5
     depends_on: [ redis ]
     restart: on-failure
     stop_grace_period: 5m30s
@@ -100,6 +100,7 @@ services:
         "lnd": { "url": "$APP_LIGHTNING_NODE_IP:$APP_LIGHTNING_NODE_GRPC_PORT", "password": ""}, 
         "boltcardservice": { "url": "http://$APP_BOLTCARD_SERVICE_IP:9001", "service_url": "http://$APP_BOLTCARD_SERVICE_IP:9000" }
       }'
+      SETTINGS_RELATIVE_PATH: '/settings'
     volumes:
       - ${APP_LIGHTNING_NODE_DATA_DIR}:/lnd:ro
     networks:
