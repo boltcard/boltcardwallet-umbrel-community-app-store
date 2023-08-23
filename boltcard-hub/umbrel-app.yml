@@ -13,8 +13,7 @@ description: >-
 
 
   Set up instructions:
-
-  - Go to $YOUR_UMBREL_IP_ADDRESS:1971/settings and set the HOST_NAME 
+  - Follow the instructions here https://boltcardwallet.com/umbrel-setup.php
 
 developer: BoltCard
 website: https://boltcard.org
