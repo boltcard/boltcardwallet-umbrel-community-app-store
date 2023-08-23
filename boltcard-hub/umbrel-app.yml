@@ -4,7 +4,7 @@ name: Bolt Card Wallet Hub
 tagline: Hub for Bolt Card Wallet
 icon: https://i.imgur.com/H7UbESy.png
 category: Development
-version: "0.2.6"
+version: "0.2.7"
 port: 1971
 description: >-
   A fork of Bluewallets LndHub with support for bolt card connections. 
