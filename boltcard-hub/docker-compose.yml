@@ -7,7 +7,7 @@ services:
       PROXY_AUTH_WHITELIST: "*"
       PROXY_AUTH_BLACKLIST: "/settings,/settings/*"
   boltcard:
-    image: onesandzerosnz/boltcard:v0.4.0
+    image: onesandzerosnz/boltcard:v0.4.0-multi-platform
     depends_on:
       - boltcard_db
     restart: unless-stopped
@@ -79,7 +79,7 @@ services:
       default:
         ipv4_address: $APP_BOLTCARD_REDIS_IP
   hub:
-    image: onesandzerosnz/boltcard-lndhub:v0.2.7
+    image: onesandzerosnz/boltcard-lndhub:v0.2.7-multi-platform
     depends_on: [ redis ]
     restart: on-failure
     stop_grace_period: 5m30s
@@ -108,7 +108,7 @@ services:
       default:
         ipv4_address: $APP_BOLTCARD_HUB_IP
   settings-gui:
-    image: onesandzerosnz/boltcardgui-umbrel:v0.1.4
+    image: onesandzerosnz/boltcardgui-umbrel:v0.1.4-multi-platform
     depends_on:
       - boltcard_db
     expose:
